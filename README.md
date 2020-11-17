@@ -10,7 +10,7 @@ _Helios KWL ist eine Lüftungsanlage mit Wärmerückgewinnung, die über einen W
 
 **Wie?** Der Code ist zwar in Englisch dokumentiert, aber in leichter Sprache gehalten und auch nicht zu komplex programmiert. Kurzfassung: Das Script lädt die aktuellen Werte aus diversen XML-Dateien, aktualisiert die entsprechenden Datenpunkte in ioBroker und sendet ggfs. eigene Werte zurück an die Anlage, um Einstellungen zu setzen.
 
-![VIS](/img/visualisation.png)
+![VIS](/img/visualisation.PNG)
 
 <center>Einbindung der Temperatursensoren und der Lüftersteuerung in VIS</center>
 
@@ -32,7 +32,7 @@ _Helios KWL ist eine Lüftungsanlage mit Wärmerückgewinnung, die über einen W
 3. IP-Adresse, Passwort und gewünschte Datenpunkte ändern
 4. Speichern und starten
 
-![Datapoints](/img/datapoints.png)
+![Datapoints](/img/datapoints.PNG)
 
 ## Weitere Datenpunkte hinzufügen
 
