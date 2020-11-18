@@ -52,7 +52,15 @@ function createHeader(ip, url, body) {
 
 // Create states from parameter names
 for (let param in datapoint_names) {
-  createState(datapoint_prefix + "." + datapoint_names[param]);
+  // Different defaults for different datapoints
+  if (param == "w00090") {
+    createState(datapoint_prefix + "." + datapoint_names[param], "0;10;4");
+  } else if (param == "w00101") {
+    createState(datapoint_prefix + "." + datapoint_names[param], 0);
+  } else {
+    // No default given
+    createState(datapoint_prefix + "." + datapoint_names[param]);
+  }
 }
 
 // Login every 5 minutes
