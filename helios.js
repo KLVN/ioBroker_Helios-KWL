@@ -14,6 +14,7 @@ const refresh_interval = 10;            // Refresh every x seconds
 const datapoint_names = {
   "w00090": "Partybetrieb_SOLL",        // on/off;duration;speed
   "v00101": "Betriebsart_IST",          // Operating mode (manual = 1, automatic = 0)
+  "w00101": "Betriebsart_SOLL",         // Custom variable for operating mode (manual = 1, automatic = 0)
   "v00102": "Luefterstufe_IST",         // Fan speed
   "w00102": "Luefterstufe_SOLL",        // Custom variable for fan speed
   "v00104": "Temperatur_Aussenluft",    // Temperature outdoor air sensor
