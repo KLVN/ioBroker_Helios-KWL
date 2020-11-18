@@ -1,5 +1,6 @@
 /*
 ioBroker-Helios-KWL
+IMPORTANT: This script requires at least Node.js v12.x!
 https://github.com/KLVN/ioBroker_Helios-KWL
 */
 
