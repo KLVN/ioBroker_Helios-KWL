@@ -138,6 +138,18 @@ on({ id: "javascript.0." + datapoint_prefix + "." + datapoint_names["w00090"], c
   setPartyMode(parseInt(values[0], 10), parseInt(values[1], 10), parseInt(values[2], 10));
 });
 
+// Set operating mode
+function setOperatingMode(onOff) {
+  // Only allow reasonable values
+  if ([0, 1].indexOf(onOff) >= 0) {
+    setValues("info", "v00101=" + onOff);
+  }
+}
+// If specified party mode was changed, then mode accordingly
+on({ id: "javascript.0." + datapoint_prefix + "." + datapoint_names["w00101"], change: "any" }, async function (obj) {
+  var value = obj.state.val;
+  setOperatingMode(value);
+});
 
 
 // SCHEDULES ///////////////////////////////////////////////////////////////
