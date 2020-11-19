@@ -156,15 +156,15 @@ on({ id: "javascript.0." + datapoint_prefix + "." + datapoint_names["w00101"], c
 // SCHEDULES ///////////////////////////////////////////////////////////////
 
 // Daily schedule: Set fan speed to 2 at 23:00 (and every 30 minutes until 5:30 so it will automatically reset, if a user changes the value)
-schedule('{"time":{"start":"23:00","end":"00:00","mode":"minutes","interval":30},"period":{"days":1}}', function () {
+schedule('{"time":{"start":"22:59","end":"00:00","mode":"minutes","interval":30},"period":{"days":1}}', function () {
   setState(datapoint_prefix + "." + datapoint_names["w00102"], 2)
 });
-schedule('{"time":{"start":"00:01","end":"05:59","mode":"minutes","interval":30},"period":{"days":1}}', function () {
+schedule('{"time":{"start":"00:01","end":"05:58","mode":"minutes","interval":30},"period":{"days":1}}', function () {
   setState(datapoint_prefix + "." + datapoint_names["w00102"], 2)
 });
 
 // Set fan speed to 0 at 6:00 (and every hour until 22:59)
-schedule('{"time":{"start":"06:00","end":"22:59","mode":"hours","interval":1},"period":{"days":1}}', function () {
+schedule('{"time":{"start":"05:59","end":"22:58","mode":"hours","interval":1},"period":{"days":1}}', function () {
   setState(datapoint_prefix + "." + datapoint_names["w00102"], 0)
 });
 
