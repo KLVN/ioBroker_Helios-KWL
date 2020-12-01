@@ -23,3 +23,24 @@ schedule('{"time":{"start":"05:59","end":"22:58","mode":"minutes","interval":1},
     setState(datapoint_prefix + "." + datapoint_names["w00102"], 0);
   }
 });
+
+
+// SCHEDULES (with presence awareness) /////////////////////////////////////
+
+/* If you have a state that counts all people at home, you can use this additional condition to turn off the
+   ventilation system/schedule if nobody is there.
+*/
+schedule('{"time":{"start":"22:59","end":"00:00","mode":"minutes","interval":30},"period":{"days":1}}', function () {
+  if (getState("INSERT_STATE_OF_PEOPLE_COUNTER")["val"] > 0) {
+    setState(datapoint_prefix + "." + datapoint_names["w00102"], 2);
+  } else {
+    setState(datapoint_prefix + "." + datapoint_names["w00102"], 0);
+  }
+});
+schedule('{"time":{"start":"00:01","end":"05:58","mode":"minutes","interval":30},"period":{"days":1}}', function () {
+  if (getState("INSERT_STATE_OF_PEOPLE_COUNTER")["val"] > 0) {
+    setState(datapoint_prefix + "." + datapoint_names["w00102"], 2);
+  } else {
+    setState(datapoint_prefix + "." + datapoint_names["w00102"], 0);
+  }
+});
