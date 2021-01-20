@@ -23,18 +23,18 @@ setInterval(function () {
     if (result.error) {
       console.error(result.error);
     } else {
-      var countAboveThreshold = result["result"][0][0]["count"];
+      if (result["result"][0].length >= 1) {
+        var countAboveThreshold = result["result"][0][0]["count"];
 
-      // If there are >= 14 values above 6kW in the last three minutes (see query)
-      if (countAboveThreshold >= 14) {
-        // then set fan speed to 4
-        setState(datapoint_prefix + "." + datapoint_names["w00102"], 4);
-        // and after 15 minutes set fan speed back to its initial value
-        setStateDelayed(datapoint_prefix + "." + datapoint_names["w00102"], currentFanSpeed, 15 * 60000, true, function () {
-          console.log("VENTILATION: Ventilation was turned off 15 minutes after showering");
-        });
+        // If there are >= 14 values above 6kW in the last three minutes (see query)
+        if (countAboveThreshold >= 14) {
+          // then set fan speed to 4
+          setState(datapoint_prefix + "." + datapoint_names["w00102"], 4);
           // and after 15 minutes set fan speed to 0
           setStateDelayed(datapoint_prefix + "." + datapoint_names["w00102"], 0, 15 * 60000, true, function () {
+            console.log("VENTILATION: Ventilation was turned off 15 minutes after showering");
+          });
+        }
       }
     }
   });
