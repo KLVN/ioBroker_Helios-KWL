@@ -12,14 +12,14 @@ _Helios KWL ist eine Lüftungsanlage mit Wärmerückgewinnung, die über einen W
 
 ![VIS](/img/visualisation.PNG)
 
-<center>Einbindung der Temperatursensoren und der Lüftersteuerung in VIS</center>
+Einbindung der Temperatursensoren und der Lüftersteuerung in VIS
 
 
 
 ## Hardware
 
 - Helios KWL EC 200W R (Sollte für alle Modelle mit Helios easyControls funktionieren. Register könnten sich jedoch unterscheiden!)
-- Server mit ioBroker **(Wichtig: Es muss mindestens Node.js v12.x installiert sein!** [Anleitung zum Aktualisieren](https://forum.iobroker.net/topic/22867/how-to-node-js-f%C3%BCr-iobroker-richtig-updaten)**)**
+- Server mit ioBroker **(Wichtig: Es muss mindestens der Javascript-Adapter v7.9.0 installiert sein!)**
 - Optional: TP-Link TL-WR802N Router (https://www.amazon.de/dp/B00TQEX8BO/)
   Ich brauchte diesen Mini-Router, weil ich kein LAN-Kabel zum eigentlichen Router verlegen konnte und auf diese Weise eine WLAN-Brücke aufgebaut habe. Sehr empfehlenswert und leicht einzurichten.
 
@@ -75,11 +75,11 @@ Standardmäßig wird vom Script der Datenpunkt `Partybetrieb_SOLL` angelegt, mit
 
 Hier ein paar Beispiele:
 
-| String |                          Bedeutung                           |
-| :----: | :----------------------------------------------------------: |
-| 1;20;4 |     Partybetrieb einschalten; Dauer 20 Minuten; Stufe 4      |
+| String |                                         Bedeutung                                         |
+|:------:|:-----------------------------------------------------------------------------------------:|
+| 1;20;4 |                    Partybetrieb einschalten; Dauer 20 Minuten; Stufe 4                    |
 | 0;20;4 | Partybetrieb ausschalten (restliche Parameter setzen dennoch die entsprechenden Register) |
-| 2;20;4 |                           Ungültig                           |
+| 2;20;4 |                                         Ungültig                                          |
 
 ### Restlaufzeit für Filterwechsel zurücksetzen
 

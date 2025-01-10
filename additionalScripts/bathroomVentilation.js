@@ -19,23 +19,27 @@
 */
 
 setInterval(function () {
-  sendTo("influxdb.0", "query", 'SELECT count("value") FROM "INSERT_STATE_OF_POWER_CONSUMPTION" WHERE time >= now() - 3m AND value >= 6000', function (result) {
-    if (result.error) {
-      console.error(result.error);
-    } else {
-      if (result["result"][0].length >= 1) {
-        var countAboveThreshold = result["result"][0][0]["count"];
-
-        // If there are >= 14 values above 6kW in the last three minutes (see query)
-        if (countAboveThreshold >= 14) {
-          // then set fan speed to 4
-          setState(datapoint_prefix + "." + datapoint_names["w00102"], 4);
-          // and after 15 minutes set fan speed to 0
-          setStateDelayed(datapoint_prefix + "." + datapoint_names["w00102"], 0, 15 * 60000, true, function () {
-            console.log("VENTILATION: Ventilation was turned off 15 minutes after showering");
-          });
+    sendTo("influxdb.0", "query", 'SELECT count("value") FROM "INSERT_STATE_OF_POWER_CONSUMPTION" WHERE time >= now() - 3m AND value >= 6000', function (result) {
+        if (result.error) {
+            console.error(result.error);
+            return;
         }
-      }
-    }
-  });
+
+        if (result["result"][0].length < 1)
+            return;
+
+        const countAboveThreshold = result["result"][0][0]["count"];
+
+        // If there are less than 14 values above 6kW in the last three minutes (see query), then skip
+        if (countAboveThreshold < 14)
+            return;
+
+        // else set fan speed to 4
+        setState(datapoint_prefix + "." + datapoint_names["w00102"], 4);
+        // and after 15 minutes set fan speed to 0
+        setStateDelayed(datapoint_prefix + "." + datapoint_names["w00102"], 0, 15 * 60000, true, function () {
+            console.log("VENTILATION: Ventilation was turned off 15 minutes after showering");
+        });
+
+    });
 }, 180000);
