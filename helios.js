@@ -26,28 +26,6 @@ const datapoint_names = {
 
 ////////////////////////////////////////////////////////////////////////////
 
-// Returns a matching header for login and XML-files
-function createHeader(ip, url, body) {
-  const header = {
-    headers: {
-      "Accept": "*/*",
-      "Accept-Encoding": "gzip, deflate",
-      "Accept-Language": "de,en-US;q=0.7,en;q=0.3",
-      "Connection": "keep-alive",
-      "Content-Length": "15",
-      "Content-Type": "text/plain;charset=UTF-8",
-      "DNT": "1",
-      "Referer": "http://" + ip + "/",
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.193 Safari/537.36",
-      "Host": ip
-    },
-    url: "http://" + ip + "/" + url,
-    body: body,
-    method: "POST"
-  };
-  return header
-}
-
 // Create states from parameter names
 for (let param in datapoint_names) {
   // Different defaults for different datapoints
@@ -67,16 +45,22 @@ for (let param in datapoint_names) {
 
 // Login every 5 minutes
 setInterval(function () {
-  request(createHeader(helios_ip, "info.htm", "v00402=" + helios_password));
+  let path = "info.htm";
+  let body = "v00402=" + helios_password;
+
+  httpPost(path, body, { headers: { "Content-Length": body.length.toString() } }, (err, response) => { });
 }, 300000);
 
 // Refresh values
 setInterval(function () {
   // Load and refresh values from different XML-files (default: page 4 and page 8. Can be extended from 1 to 17 to obtain everything)
   const xmlPages = [4, 8];
-  xmlPages.forEach(function (page, index) {
-    request(createHeader(helios_ip, "data/werte" + page + ".xml", "xml=/data/werte" + page + ".xml"), function (error, response, result) {
-      refreshValues(result);
+  xmlPages.forEach(function (page) {
+    let path = "http://" + helios_ip + "/data/werte" + page + ".xml";
+    let body = "xml=/data/werte" + page + ".xml";
+
+    httpPost(path, body, { headers: { "Content-Length": body.length.toString() } }, (err, response) => {
+      refreshValues(response.data);
     });
   });
 }, refresh_interval * 1000);
@@ -99,15 +83,17 @@ function refreshValues(xml) {
 }
 
 // Takes an URL-path and multiple registers with values to set values and change settings
-function setValues(path, values) {
+function setValues(page) {
   const args = arguments;
-  let arrayValues = [];
-
+  const arrayValues = [];
   for (let i = 1; i < args.length; i++) {
     arrayValues.push(args[i]);
   }
 
-  request(createHeader(helios_ip, path + ".htm", arrayValues.join("&")));
+  let path = "http://" + helios_ip + "/" + page + ".htm";
+  let body = arrayValues.join("&");
+
+  httpPost(path, body, { headers: { "Content-Length": body.length.toString() } }, (err, response) => { });
 }
 
 // Set fan speed
@@ -132,21 +118,28 @@ on({ id: "javascript.0." + datapoint_prefix + "." + datapoint_names["w00102"], c
 // "1;10;4" = turn on party mode for 10 minutes and set fan speed to 4
 // "2;10;4" = invalid
 // "0;10;4" = turn off party mode
+let Timer_Partymode;
 function setPartyMode(onOff, duration, speed) {
-  // Only allow reasonable values
   const isOnOffValid = 0 <= onOff && onOff <= 1;
-  if (!isOnOffValid)
-    return;
-
   const isDurationValid = 0 < duration && duration <= 180;
-  if (!isDurationValid)
-    return;
-
   const isSpeedValid = 0 <= speed && speed <= 4;
-  if (!isSpeedValid)
+
+  // Only allow reasonable values
+  if (!isOnOffValid || !isDurationValid || !isSpeedValid)
     return;
 
-  setValues("party", "v00094=" + onOff, "v00091=" + duration, "v00092=" + speed);
+  // Clear old timer
+  clearStateDelayed("javascript.0." + datapoint_prefix + "." + datapoint_names["w00102"], Timer_Partymode);
+
+  // use setFanSpeed() to set desired speed
+  setFanSpeed(speed);
+
+  // if desired speed was 0 then the fan is already turned off...
+  if (speed === 0)
+    return;
+
+  // ...but if it was above 0 then we have to set it back to 0 after [duration] minutes
+  Timer_Partymode = setStateDelayed("javascript.0." + datapoint_prefix + "." + datapoint_names["w00102"], 0, duration * 60000, true);
 }
 
 // If specified party mode was changed, then mode accordingly
