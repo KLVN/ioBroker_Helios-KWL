@@ -1,6 +1,6 @@
 /*
 ioBroker-Helios-KWL
-IMPORTANT: This script requires at least JavaScript adapter v8.0.0!
+IMPORTANT: This script requires at least JavaScript adapter v7.9.0!
 https://github.com/KLVN/ioBroker_Helios-KWL
 */
 
