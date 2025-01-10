@@ -26,12 +26,9 @@ const datapoint_names = {
 
 ////////////////////////////////////////////////////////////////////////////
 
-// Not necessary; already defined in ioBroker
-// var request= require('request');
-
 // Returns a matching header for login and XML-files
 function createHeader(ip, url, body) {
-  var header = {
+  const header = {
     headers: {
       "Accept": "*/*",
       "Accept-Encoding": "gzip, deflate",
@@ -47,21 +44,25 @@ function createHeader(ip, url, body) {
     url: "http://" + ip + "/" + url,
     body: body,
     method: "POST"
-  }
+  };
   return header
 }
 
 // Create states from parameter names
 for (let param in datapoint_names) {
   // Different defaults for different datapoints
-  if (param == "w00090") {
+  if (param === "w00090") {
     createState(datapoint_prefix + "." + datapoint_names[param], "0;10;4");
-  } else if (param == "w00101") {
-    createState(datapoint_prefix + "." + datapoint_names[param], 0);
-  } else {
-    // No default given
-    createState(datapoint_prefix + "." + datapoint_names[param]);
+    continue;
   }
+
+  if (param === "w00101") {
+    createState(datapoint_prefix + "." + datapoint_names[param], 0);
+    continue;
+  }
+
+  // No default given
+  createState(datapoint_prefix + "." + datapoint_names[param]);
 }
 
 // Login every 5 minutes
@@ -83,41 +84,46 @@ setInterval(function () {
 // Read XML response, extract IDs and values, refresh states with new values
 function refreshValues(xml) {
   const regex = /<ID>(?<ID>v\d{5})<\/ID>\s*?<VA>(?<VALUE>.*?)<\/VA>/gm;
-  var elements = xml.matchAll(regex);
+  const elements = xml.matchAll(regex);
 
   for (let element of elements) {
     let { ID, VALUE } = element.groups;
     let NAME = datapoint_names[ID];
 
     // Only refresh values that we have names for
-    if (NAME != undefined) {
-      setState(datapoint_prefix + "." + NAME, VALUE);
-    }
+    if (NAME === undefined)
+      continue;
+
+    setState(datapoint_prefix + "." + NAME, VALUE);
   }
 }
 
 // Takes an URL-path and multiple registers with values to set values and change settings
 function setValues(path, values) {
-  var args = arguments;
-  var arrayValues = [];
-  for (var i = 1; i < args.length; i++) {
+  const args = arguments;
+  let arrayValues = [];
+
+  for (let i = 1; i < args.length; i++) {
     arrayValues.push(args[i]);
   }
+
   request(createHeader(helios_ip, path + ".htm", arrayValues.join("&")));
 }
 
 // Set fan speed
 function setFanSpeed(speed) {
   // Check if wanted fan speed is a reasonable value
-  if ([0, 1, 2, 3, 4].indexOf(speed) >= 0) {
+  if (0 <= speed && speed <= 4) {
     setValues("info", "v00102=" + speed);
-  } else {
-    setFanSpeed(0);
+    return;
   }
+
+  setFanSpeed(0);
 }
+
 // If specified fan speed was changed, then set fan speed accordingly
 on({ id: "javascript.0." + datapoint_prefix + "." + datapoint_names["w00102"], change: "any" }, async function (obj) {
-  var value = obj.state.val;
+  const value = obj.state.val;
   setFanSpeed(value);
 });
 
@@ -128,27 +134,41 @@ on({ id: "javascript.0." + datapoint_prefix + "." + datapoint_names["w00102"], c
 // "0;10;4" = turn off party mode
 function setPartyMode(onOff, duration, speed) {
   // Only allow reasonable values
-  if (([0, 1].indexOf(onOff) >= 0) && (duration > 0) && (duration <= 180) && ([0, 1, 2, 3, 4].indexOf(speed) >= 0)) {
-    setValues("party", "v00094=" + onOff, "v00091=" + duration, "v00092=" + speed);
-  }
+  const isOnOffValid = 0 <= onOff && onOff <= 1;
+  if (!isOnOffValid)
+    return;
+
+  const isDurationValid = 0 < duration && duration <= 180;
+  if (!isDurationValid)
+    return;
+
+  const isSpeedValid = 0 <= speed && speed <= 4;
+  if (!isSpeedValid)
+    return;
+
+  setValues("party", "v00094=" + onOff, "v00091=" + duration, "v00092=" + speed);
 }
+
 // If specified party mode was changed, then mode accordingly
 on({ id: "javascript.0." + datapoint_prefix + "." + datapoint_names["w00090"], change: "any" }, async function (obj) {
-  var value = obj.state.val;
-  var values = value.split(";");
+  const value = obj.state.val;
+  const values = value.split(";");
   setPartyMode(parseInt(values[0], 10), parseInt(values[1], 10), parseInt(values[2], 10));
 });
 
 // Set operating mode
 function setOperatingMode(onOff) {
   // Only allow reasonable values
-  if ([0, 1].indexOf(onOff) >= 0) {
-    setValues("info", "v00101=" + onOff);
-  }
+  const isOnOffValid = 0 <= onOff && onOff <= 1;
+  if (!isOnOffValid)
+    return;
+
+  setValues("info", "v00101=" + onOff);
 }
+
 // If specified party mode was changed, then mode accordingly
 on({ id: "javascript.0." + datapoint_prefix + "." + datapoint_names["w00101"], change: "any" }, async function (obj) {
-  var value = obj.state.val;
+  const value = obj.state.val;
   setOperatingMode(value);
 });
 
