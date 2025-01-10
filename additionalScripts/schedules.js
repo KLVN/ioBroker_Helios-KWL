@@ -13,10 +13,10 @@ schedule('{"time":{"start":"00:01","end":"05:58","mode":"minutes","interval":30}
    to ensure it's not running all day long.
 */
 schedule('{"time":{"start":"05:59","end":"22:58","mode":"minutes","interval":1},"period":{"days":1}}', function () {
-  var currentState = getState(datapoint_prefix + "." + datapoint_names["w00102"]);
-  var currentValue = currentState["val"]
-  var lastChanged = currentState["lc"];
-  var now = Date.now();
+  const currentState = getState(datapoint_prefix + "." + datapoint_names["w00102"]);
+  const currentValue = currentState["val"];
+  const lastChanged = currentState["lc"];
+  const now = Date.now();
 
   // If fan speed was changed 20 minutes ago, then set fan speed to 0
   if (((now - 20 * 60000) > lastChanged) && currentValue != 0) {
