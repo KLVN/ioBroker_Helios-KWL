@@ -48,7 +48,7 @@ setInterval(function () {
     let path = "info.htm";
     let body = "v00402=" + helios_password;
 
-    httpPost(path, body, {headers: {"Content-Length": body.length.toString()}}, (err, response) => {
+    httpPost(path, body, {headers: {"Content-Length": body.length.toString()}}, () => {
     });
 }, 300000);
 
@@ -60,7 +60,7 @@ setInterval(function () {
         let path = "http://" + helios_ip + "/data/werte" + page + ".xml";
         let body = "xml=/data/werte" + page + ".xml";
 
-        httpPost(path, body, {headers: {"Content-Length": body.length.toString()}}, (err, response) => {
+        httpPost(path, body, {headers: {"Content-Length": body.length.toString()}}, (_, response) => {
             refreshValues(response.data);
         });
     });
@@ -94,7 +94,7 @@ function setValues(page) {
     let path = "http://" + helios_ip + "/" + page + ".htm";
     let body = arrayValues.join("&");
 
-    httpPost(path, body, {headers: {"Content-Length": body.length.toString()}}, (err, response) => {
+    httpPost(path, body, {headers: {"Content-Length": body.length.toString()}}, () => {
     });
 }
 

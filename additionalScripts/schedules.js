@@ -19,7 +19,7 @@ schedule('{"time":{"start":"05:59","end":"22:58","mode":"minutes","interval":1},
   const now = Date.now();
 
   // If fan speed was changed 20 minutes ago, then set fan speed to 0
-  if (((now - 20 * 60000) > lastChanged) && currentValue != 0) {
+  if (((now - 20 * 60000) > lastChanged) && currentValue !== 0) {
     setState(datapoint_prefix + "." + datapoint_names["w00102"], 0);
   }
 });

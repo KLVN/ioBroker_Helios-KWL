@@ -12,7 +12,7 @@ _Helios KWL ist eine Lüftungsanlage mit Wärmerückgewinnung, die über einen W
 
 ![VIS](/img/visualisation.PNG)
 
-<center>Einbindung der Temperatursensoren und der Lüftersteuerung in VIS</center>
+Einbindung der Temperatursensoren und der Lüftersteuerung in VIS
 
 
 
@@ -75,11 +75,11 @@ Standardmäßig wird vom Script der Datenpunkt `Partybetrieb_SOLL` angelegt, mit
 
 Hier ein paar Beispiele:
 
-| String |                          Bedeutung                           |
-| :----: | :----------------------------------------------------------: |
-| 1;20;4 |     Partybetrieb einschalten; Dauer 20 Minuten; Stufe 4      |
+| String |                                         Bedeutung                                         |
+|:------:|:-----------------------------------------------------------------------------------------:|
+| 1;20;4 |                    Partybetrieb einschalten; Dauer 20 Minuten; Stufe 4                    |
 | 0;20;4 | Partybetrieb ausschalten (restliche Parameter setzen dennoch die entsprechenden Register) |
-| 2;20;4 |                           Ungültig                           |
+| 2;20;4 |                                         Ungültig                                          |
 
 ### Restlaufzeit für Filterwechsel zurücksetzen
 
